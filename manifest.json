@@ -1,0 +1,8 @@
+{
+  "name": "Дневник диабета",
+  "short_name": "Diabetes",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1976d2",
+  "theme_color": "#1976d2"
+} 

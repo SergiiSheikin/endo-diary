@@ -1,0 +1,513 @@
+body {
+  font-family: system-ui, Arial, sans-serif;
+  margin: 0;
+  background: #f5f5f5;
+  color: #222;
+  transition: background 0.3s, color 0.3s;
+}
+header {
+  background: #1976d2;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  transition: background 0.3s;
+}
+h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+main {
+  padding: 1rem;
+}
+.form-grid {
+  display: block !important;
+}
+label {
+  display: block;
+  margin-bottom: 0.8rem;
+}
+input {
+  width: 100%;
+  padding: 0.4rem;
+  font-size: 1rem;
+  margin-top: 0.2rem;
+  box-sizing: border-box;
+}
+select {
+  width: 100%;
+  padding: 0.4rem;
+  font-size: 1rem;
+  margin-top: 0.2rem;
+  box-sizing: border-box;
+}
+button {
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+button:hover {
+  background: #155a9c;
+}
+.card {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 6px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+.hidden { display: none; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 0.4rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+th {
+  background: #e3e3e3;
+}
+@media (min-width: 600px) {
+  main { max-width: 600px; margin: 0 auto; }
+}
+
+.label-btn {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  font-size: 1rem;
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.label-btn:hover { background:#3c8b41; }
+
+#items-list {
+  margin: 0.5rem 0;
+  padding-left: 1rem;
+  font-size: 0.9rem;
+}
+#items-list li {
+  margin-bottom: 0.3rem;
+}
+
+.primary-btn {background:#1976d2;color:#fff;border:none;padding:0.6rem 1rem;font-size:1rem;border-radius:4px;cursor:pointer;}
+.primary-btn:hover{background:#155a9c;}
+
+.history-tools{
+  margin:0.5rem 0 1rem;
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.5rem 1rem;
+  align-items:center;
+}
+
+details{
+  border:1px solid #ccc;
+  border-radius:6px;
+  margin-bottom:0.6rem;
+  /* background:#fff; */
+  padding:0.4rem 0.8rem;
+}
+
+details[open]{box-shadow:0 1px 4px rgba(0,0,0,0.1);}
+
+summary{
+  cursor:pointer;
+  font-weight:600;
+}
+summary::-webkit-details-marker{display:none;}
+.entry-table{width:100%;border-collapse:collapse;margin-top:0.4rem;font-size:0.85rem;}
+.entry-table th,.entry-table td{border:1px solid #ddd;padding:0.3rem;text-align:center;}
+
+/* Product row styling */
+.product-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
+}
+.product-row label {
+  margin-bottom: 0;
+}
+.product-row button.label-btn {
+  height: 2.4em;
+  font-size: 1.2em;
+  padding: 0.3em 1em;
+}
+
+/* Одноколонкова форма по центру */
+.form-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  margin: 0 auto;
+  gap: 0.5rem;
+}
+.form-column label {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+.inline-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+.form-column button.primary-btn,
+.form-column button.label-btn {
+  width: 100%;
+  margin: 0.2rem 0;
+}
+
+@media (max-width: 480px) {
+  .form-column {
+    max-width: 98vw;
+    padding: 0 2vw;
+    gap: 0.3rem;
+  }
+  .form-column label {
+    font-size: 0.98rem;
+    margin-bottom: 0.2rem;
+  }
+  .inline-row {
+    gap: 0.2rem;
+  }
+  .inline-row select,
+  .inline-row input[type="number"] {
+    font-size: 1rem;
+    padding: 0.3rem 0.2rem;
+    min-width: 0;
+    width: 60%;
+    max-width: 180px;
+  }
+  .inline-row button.label-btn {
+    font-size: 1rem;
+    padding: 0.3rem 0.7rem;
+    min-width: 0;
+    width: auto;
+    white-space: nowrap;
+  }
+  .form-column button.primary-btn,
+  .form-column button.label-btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+  }
+  #items-list {
+    font-size: 0.95rem;
+    padding-left: 0.5rem;
+  }
+  .entry-table, table {
+    font-size: 0.8rem;
+    min-width: 480px;
+  }
+  #history-container {
+    overflow-x: auto;
+  }
+}
+
+/* Header tools (експорт/імпорт у шапці) */
+.header-tools {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+@media (max-width: 600px) {
+  .header-tools {
+    position: static;
+    justify-content: center;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Chart section */
+#chart-section {
+  margin: 2rem auto 1rem auto;
+  max-width: 600px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+  padding: 1rem 0.5rem 1.5rem 0.5rem;
+  text-align: center;
+}
+#chart {
+  width: 100% !important;
+  max-width: 580px;
+  margin: 0 auto;
+  background: #f8f8f8;
+  border-radius: 6px;
+}
+
+/* Нові кнопки експорту в історії */
+.history-tools select {
+  padding: 0.3rem 0.7rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+@media (max-width: 480px) {
+  .history-tools {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.3rem;
+  }
+  .history-tools select {
+    margin: 0.2rem 0;
+    width: 100%;
+  }
+}
+
+/* Збільшена ширина історії та таблиці */
+@media (min-width: 900px) {
+  #history-section {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .entry-table, table {
+    max-width: 1100px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+}
+
+.entry-table th, .entry-table td, th, td {
+  padding: 0.3rem 0.5rem;
+}
+
+:root {
+  --bg: #f5f5f5;
+  --text: #222;
+  --header: #1976d2;
+  --card: #fff;
+  --table-head: #e3e3e3;
+  --table-border: #ddd;
+  --btn-bg: #1976d2;
+  --btn-hover: #155a9c;
+  --btn-label: #4caf50;
+  --btn-label-hover: #3c8b41;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+header {
+  background: var(--header);
+  color: #fff;
+}
+.card, #chart-section {
+  background: var(--card);
+}
+.entry-table th, th {
+  background: var(--table-head);
+  border-color: var(--table-border);
+}
+.entry-table, table {
+  background: var(--card);
+  border-color: var(--table-border);
+}
+button, .primary-btn {
+  background: var(--btn-bg);
+  color: #fff;
+}
+button:hover, .primary-btn:hover {
+  background: var(--btn-hover);
+}
+.label-btn {
+  background: var(--btn-label);
+}
+.label-btn:hover {
+  background: var(--btn-label-hover);
+}
+
+/* Темна тема */
+.dark-theme {
+  --bg: #181c1f;
+  --text: #e0e0e0;
+  --header: #222e3a;
+  --card: #23272b;
+  --table-head: #2c3440;
+  --table-border: #444b55;
+  --btn-bg: #2a7fff;
+  --btn-hover: #1856a9;
+  --btn-label: #388e3c;
+  --btn-label-hover: #256029;
+}
+
+.dark-theme body, .dark-theme {
+  background: var(--bg);
+  color: var(--text);
+}
+.dark-theme header {
+  background: var(--header);
+  color: #fff;
+}
+.dark-theme .card, .dark-theme #chart-section {
+  background: var(--card);
+}
+.dark-theme .entry-table th, .dark-theme th {
+  background: var(--table-head);
+  border-color: var(--table-border);
+  color: #fff;
+}
+.dark-theme .entry-table, .dark-theme table {
+  background: var(--card);
+  border-color: var(--table-border);
+}
+.dark-theme button, .dark-theme .primary-btn {
+  background: var(--btn-bg);
+  color: #fff;
+}
+.dark-theme button:hover, .dark-theme .primary-btn:hover {
+  background: var(--btn-hover);
+}
+.dark-theme .label-btn {
+  background: var(--btn-label);
+}
+.dark-theme .label-btn:hover {
+  background: var(--btn-label-hover);
+}
+
+/* Горизонтальний скрол тільки для мобільних */
+@media (max-width: 899px) {
+  #history-container {
+    overflow-x: auto;
+  }
+  .entry-table, table {
+    min-width: 900px;
+  }
+}
+
+#history-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  overflow-x: auto;
+}
+.entry-table, table {
+  width: 100%;
+  min-width: 1000px;
+  max-width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+@media (max-width: 1100px) {
+  .entry-table, table {
+    min-width: 900px;
+  }
+}
+
+/* Modal styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Ensure it sits on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        width: 95%;
+        padding: 10px;
+    }
+    .entry-table {
+        font-size: 0.8rem;
+    }
+    .entry-table th, .entry-table td {
+        padding: 2px 4px;
+    }
+    #modal-history-container {
+        overflow-x: auto;
+    }
+} 
+
+/* my css */
+.text-center {
+  text-align: center;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+#history-table {
+  min-width: 950px;
+}
+
+#history-table thead tr {
+  background: #1976d2;
+  color: #fff;
+}
+/* @media (max-width: 600px) {
+  .primary-btn, .label-btn {
+    font-size: 1.2em;
+    padding: 1em 1.5em;
+  }
+  input, select {
+    font-size: 1.1em;
+    padding: 0.7em;
+  }
+  label {
+    font-size: 1.1em;
+  }
+} */
+
+.hypo-row {
+  background: orange !important; /* світло-жовтий */
+}
+.hyper-row {
+  background: red !important; /* світло-рожевий */
+}
+
+.normal-row {
+  background: green !important; /* світло-зелений */
+}

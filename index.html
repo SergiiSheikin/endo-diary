@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Щоденник діабету</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#1976d2" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="PTSans-Regular-normal.js"></script>
+    <script src="PTSans-Bold-bold.js"></script>
+    <script src="PTSans-Bold-normal.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Щоденник діабету</h1>
+        <div class="header-tools">
+            <button type="button" id="theme-toggle" class="label-btn" title="Змінити тему">🌙</button>
+            <button type="button" id="export-data" class="label-btn" title="Експорт JSON">Експорт JSON</button>
+            <button type="button" id="import-data" class="label-btn" title="Імпорт JSON">Імпорт JSON</button>
+            <input type="file" id="import-file" accept="application/json" style="display:none" />
+        </div>
+    </header>
+
+    <main>
+        <section id="entry-section">
+            <h2 class="text-center">Новий запис</h2>
+            <form id="entry-form" class="form-column">
+                <label title="Дата, коли ви робите запис">Дата:
+                    <input type="date" id="date" required />
+                </label>
+                <label title="Час прийому їжі або вимірювання">Час:
+                    <input type="time" id="time" required />
+                </label>
+                <label title="Виберіть прийом їжі (сніданок, обід тощо)">Прийом їжі:
+                    <select id="meal"></select>
+                </label>
+                <label title="Група продукту для швидкого пошуку">Група продуктів:
+                    <select id="group"></select>
+                </label>
+                <label title="Оберіть продукт зі списку або додайте свій">Продукт:
+                    <div class="inline-row">
+                        <select id="product"></select>
+                        <button type="button" id="add-product" class="label-btn" title="Додати новий продукт у список">＋</button>
+                    </div>
+                </label>
+                <label title="Вкажіть вагу продукту в грамах">Грами (г):
+                    <div class="inline-row">
+                        <input type="number" id="grams" step="1" />
+                        <button type="button" id="add-item" class="label-btn" title="Додати продукт у список прийому">Додати</button>
+                    </div>
+                </label>
+                <ul id="items-list"></ul>
+                
+                <label title="Ваша глюкоза перед їжею (ммоль/л)">Глюкоза перед їжею (ммоль/л):
+                    <input type="number" id="glucose" step="0.1" required />
+                </label>
+                <label title="Хлібні одиниці (ХО) — скільки ХО у вашій їжі. 1 ХО = 10-12 г вуглеводів.">Хлібні одиниці (ХО):
+                    <input type="number" id="carbs" step="0.1" readonly />
+                </label>
+                <button type="submit" class="primary-btn" title="Зберегти запис і розрахувати дозу інсуліну">Зберегти й розрахувати</button>
+            </form>
+            <div id="recommendation" class="card hidden"></div>
+        </section>
+        <section id="history-section" class="card" style="margin-top:1.5rem;">
+            <h2 class="text-center">Історія за 7 днів</h2>
+            <div class="table-scroll">
+            <table id="history-table">
+                <thead>
+                    <tr>
+                        <th>Дата</th>
+                        <th>Час</th>
+                        <th>Прийом їжі</th>
+                        <th>Продукти</th>
+                        <th>Грами</th>
+                        <th>ХО</th>
+                        <th>Глюкоза</th>
+                        <th>Коефіцієнт</th>
+                        <th>Компенсація</th>
+                        <th>Інсулін</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            </div>
+            <div id="history-stats" class="card" style="margin-top:1rem;"></div>
+        </section>
+        <section id="chart-section" class="card" style="margin-top:1.5rem;">
+            <h2 class="text-center">Графік глюкози та інсуліну (7 днів)</h2>
+            <canvas id="chart" height="220"></canvas>
+        </section>
+    </main>
+
+    <footer>
+        <p>Цільовий цукор: 7 ммоль/л • Коеф. вуглеводів: 1 од/ХО • ISF: 2 ммоль/л</p>
+    </footer>
+
+    <div id="history-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div id="modal-history-container"></div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html> 
