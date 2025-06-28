@@ -1,7 +1,7 @@
 {
   "name": "Щоденник діабету",
   "short_name": "Діабет",
-  "id": "/index.html",
+  "id": "/endo-diary/",
   "description": "Застосунок для ведення щоденника діабету, розрахунку інсуліну та підрахунку хлібних одиниць.",
   "start_url": "/endo-diary/",
   "display": "standalone",
