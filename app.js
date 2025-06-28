@@ -338,7 +338,23 @@ form.addEventListener('submit', async (e) => {
     'Поздний перекус': 'Пізній перекус'
   }[meal] || meal;
   
-  recDiv.textContent = `Рекомендована доза Apidra: ${recDose} од. (${mealLabel})`;
+  let multiplier = 1;
+  switch (meal) {
+    case 'Завтрак':
+      multiplier = currentSettings.multipliers.breakfast;
+      break;
+    case 'Обед':
+      multiplier = currentSettings.multipliers.lunch;
+      break;
+    case 'Ужин':
+      multiplier = currentSettings.multipliers.dinner;
+      break;
+    default: // Перекуси
+      multiplier = currentSettings.multipliers.snack;
+      break;
+  }
+  
+  recDiv.textContent = `Рекомендована доза Apidra: ${recDose} од. (${mealLabel} ×${multiplier})`;
 
   const entry = { date, meal, time, items: currentItems.slice(), glucose, carbs: carbs.toFixed(1), recommendation: recDose };
   await saveEntryToHistory(entry);
