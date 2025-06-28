@@ -2,12 +2,23 @@
 
 import { get, set, update } from 'https://cdn.jsdelivr.net/npm/idb-keyval@6/+esm';
 
-const TARGET_GLUCOSE = 7; // ммоль/л
-const ISF = 2; // ммоль/л снижается 1 ед ins
+// Налаштування за замовчуванням
+const DEFAULT_SETTINGS = {
+  targetGlucose: 7, // ммоль/л
+  isf: 2, // ммоль/л снижается 1 ед ins
+  multipliers: {
+    breakfast: 2, // сніданок
+    lunch: 1.5,   // обід
+    dinner: 1,    // вечеря
+    snack: 1.5    // перекуси
+  }
+};
+
+// Поточні налаштування (будуть завантажені з IndexedDB)
+let currentSettings = { ...DEFAULT_SETTINGS };
 
 const form = document.getElementById('entry-form');
 const recDiv = document.getElementById('recommendation');
-// tableBody no longer used
 
 // product related elements
 const groupSelect = document.getElementById('group');
@@ -17,8 +28,6 @@ const gramsInput = document.getElementById('grams');
 const carbsInput = document.getElementById('carbs');
 const addItemBtn = document.getElementById('add-item');
 const itemsListElem = document.getElementById('items-list');
-const historyContainer = document.getElementById('history-container');
-const filterDateInput = document.getElementById('filter-date');
 const clearTodayBtn = document.getElementById('clear-today');
 
 // список добавленных позицій поточного прийому
@@ -268,21 +277,27 @@ addItemBtn.addEventListener('click', () => {
   gramsInput.value = '';
 });
 
-// Коефіцієнти для різних прийомів їжі
-const MEAL_RATIOS = {
-  'Завтрак': 2,
-  'Обед': 1.5,
-  'Ужин': 1,
-  'Перекус': 1.5,
-  'Полдник': 1.5,
-  'Поздний перекус': 1.5
-};
-
 // Розраховує рекомендовану дозу інсуліну
 function calculateRecommendation(glucose, carbs, meal) {
-  const ratio = MEAL_RATIOS[meal] || 1;
-  const foodDose = carbs * ratio;
-  const correctionDose = (glucose - TARGET_GLUCOSE) / ISF;
+  // Визначаємо множник залежно від прийому їжі
+  let multiplier = 1;
+  switch (meal) {
+    case 'Завтрак':
+      multiplier = currentSettings.multipliers.breakfast;
+      break;
+    case 'Обед':
+      multiplier = currentSettings.multipliers.lunch;
+      break;
+    case 'Ужин':
+      multiplier = currentSettings.multipliers.dinner;
+      break;
+    default: // Перекуси
+      multiplier = currentSettings.multipliers.snack;
+      break;
+  }
+  
+  const foodDose = carbs * multiplier;
+  const correctionDose = (glucose - currentSettings.targetGlucose) / currentSettings.isf;
   const total = foodDose + correctionDose;
   return Math.max(0, Math.round(total));
 }
@@ -322,8 +337,8 @@ form.addEventListener('submit', async (e) => {
     'Полдник': 'Полуденок',
     'Поздний перекус': 'Пізній перекус'
   }[meal] || meal;
-  const ratio = MEAL_RATIOS[meal] || 1;
-  recDiv.textContent = `Рекомендована доза Apidra: ${recDose} од. (${mealLabel}, коеф. ${ratio})`;
+  
+  recDiv.textContent = `Рекомендована доза Apidra: ${recDose} од. (${mealLabel})`;
 
   const entry = { date, meal, time, items: currentItems.slice(), glucose, carbs: carbs.toFixed(1), recommendation: recDose };
   await saveEntryToHistory(entry);
@@ -560,8 +575,27 @@ async function renderHistoryTable() {
     const tr = document.createElement('tr');
     const itemsText = (entry.items||[]).map(it=>`${it.name} ${it.grams}г`).join('; ');
     const totalGr = (entry.items||[]).reduce((s,it)=>s+it.grams,0);
-    const compensation = (entry.glucose > 7) ? ((entry.glucose - 7) / 2).toFixed(2) : '0';
-    const ratio = MEAL_RATIOS[entry.meal] || 1;
+    const compensation = (entry.glucose > currentSettings.targetGlucose) ? ((entry.glucose - currentSettings.targetGlucose) / currentSettings.isf).toFixed(2) : '0';
+    
+    // Визначаємо множник для відображення
+    let multiplier = 1;
+    switch (entry.meal) {
+      case 'Завтрак':
+        multiplier = currentSettings.multipliers.breakfast;
+        break;
+      case 'Обед':
+        multiplier = currentSettings.multipliers.lunch;
+        break;
+      case 'Ужин':
+        multiplier = currentSettings.multipliers.dinner;
+        break;
+      default: // Перекуси
+        multiplier = currentSettings.multipliers.snack;
+        break;
+    }
+    
+    const ratio = multiplier;
+
     // Підсвічування гіпо/гіпер/норма
     let rowClass = '';
     let rowTitle = '';
@@ -689,8 +723,25 @@ function exportHistoryCsv(entries) {
   const rows = entries.map(entry => {
     const itemsText = (entry.items||[]).map(it=>`${it.name} ${it.grams}г`).join('; ');
     const totalGr = (entry.items||[]).reduce((s,it)=>s+it.grams,0);
-    const compensation = (entry.glucose > 7) ? ((entry.glucose - 7) / 2).toFixed(2) : '0';
-    const ratio = (typeof MEAL_RATIOS !== 'undefined' && MEAL_RATIOS[entry.meal]) ? MEAL_RATIOS[entry.meal] : 1;
+    const compensation = (entry.glucose > currentSettings.targetGlucose) ? ((entry.glucose - currentSettings.targetGlucose) / currentSettings.isf).toFixed(2) : '0';
+    
+    // Визначаємо множник для відображення
+    let multiplier = 1;
+    switch (entry.meal) {
+      case 'Завтрак':
+        multiplier = currentSettings.multipliers.breakfast;
+        break;
+      case 'Обед':
+        multiplier = currentSettings.multipliers.lunch;
+        break;
+      case 'Ужин':
+        multiplier = currentSettings.multipliers.dinner;
+        break;
+      default: // Перекуси
+        multiplier = currentSettings.multipliers.snack;
+        break;
+    }
+    
     return [
       entry.date,
       entry.time || '',
@@ -699,7 +750,7 @@ function exportHistoryCsv(entries) {
       totalGr,
       entry.carbs,
       entry.glucose + ' ммоль/л',
-      'x' + ratio,
+      'x' + multiplier,
       compensation + ' од.',
       entry.recommendation + ' од.'
     ];
@@ -772,8 +823,25 @@ function exportHistoryPdf(entries, periodText = '') {
   const rows = entries.map(entry => {
     const itemsText = (entry.items||[]).map(it=>`${it.name} ${it.grams}г`).join('; ');
     const totalGr = (entry.items||[]).reduce((s,it)=>s+it.grams,0);
-    const compensation = (entry.glucose > 7) ? ((entry.glucose - 7) / 2).toFixed(2) : '0';
-    const ratio = (typeof MEAL_RATIOS !== 'undefined' && MEAL_RATIOS[entry.meal]) ? MEAL_RATIOS[entry.meal] : 1;
+    const compensation = (entry.glucose > currentSettings.targetGlucose) ? ((entry.glucose - currentSettings.targetGlucose) / currentSettings.isf).toFixed(2) : '0';
+    
+    // Визначаємо множник для відображення
+    let multiplier = 1;
+    switch (entry.meal) {
+      case 'Завтрак':
+        multiplier = currentSettings.multipliers.breakfast;
+        break;
+      case 'Обед':
+        multiplier = currentSettings.multipliers.lunch;
+        break;
+      case 'Ужин':
+        multiplier = currentSettings.multipliers.dinner;
+        break;
+      default: // Перекуси
+        multiplier = currentSettings.multipliers.snack;
+        break;
+    }
+    
     return [
       entry.date,
       entry.time || '',
@@ -782,7 +850,7 @@ function exportHistoryPdf(entries, periodText = '') {
       totalGr,
       entry.carbs,
       entry.glucose,
-      'x' + ratio,
+      'x' + multiplier,
       compensation,
       entry.recommendation
     ];
@@ -848,11 +916,18 @@ const importFileInput = document.getElementById('import-file');
 if (exportJsonBtn) {
   exportJsonBtn.addEventListener('click', async () => {
     const history = await get('history') || [];
-    const blob = new Blob([JSON.stringify(history, null, 2)], {type: 'application/json'});
+    const settings = await get('userSettings') || DEFAULT_SETTINGS;
+    const exportData = {
+      history,
+      settings,
+      exportDate: new Date().toISOString(),
+      version: '1.0'
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {type: 'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'diabetes_history.json';
+    a.download = 'diabetes_diary_backup.json';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -872,14 +947,28 @@ if (importJsonBtn && importFileInput) {
     const text = await file.text();
     try {
       const data = JSON.parse(text);
+      
+      // Підтримка як старого формату (тільки історія), так і нового (з налаштуваннями)
       if (Array.isArray(data)) {
+        // Старий формат - тільки історія
         await set('history', data);
-        await renderHistoryTable();
-        await renderChart7Days();
         alert('Історію імпортовано!');
+      } else if (data.history && Array.isArray(data.history)) {
+        // Новий формат - історія + налаштування
+        await set('history', data.history);
+        if (data.settings) {
+          await set('userSettings', data.settings);
+          currentSettings = { ...DEFAULT_SETTINGS, ...data.settings };
+          updateFooterSettings();
+        }
+        alert('Історію та налаштування імпортовано!');
       } else {
-        alert('Файл не містить масив історії!');
+        alert('Неправильний формат файлу!');
+        return;
       }
+      
+      await renderHistoryTable();
+      await renderChart7Days();
     } catch (e) {
       alert('Помилка при імпорті JSON!');
     }
@@ -1072,3 +1161,168 @@ function filterEntriesByPeriod(entries, period, year, month, from, to) {
   }
   return entries.slice();
 }
+
+// ---------------------- Settings Management ----------------------
+
+// Завантаження налаштувань з IndexedDB
+async function loadSettings() {
+  try {
+    const savedSettings = await get('userSettings');
+    if (savedSettings) {
+      currentSettings = { ...DEFAULT_SETTINGS, ...savedSettings };
+    }
+    updateFooterSettings();
+  } catch (error) {
+    console.error('Помилка завантаження налаштувань:', error);
+  }
+}
+
+// Збереження налаштувань в IndexedDB
+async function saveSettings(settings) {
+  try {
+    await set('userSettings', settings);
+    currentSettings = settings;
+    updateFooterSettings();
+  } catch (error) {
+    console.error('Помилка збереження налаштувань:', error);
+  }
+}
+
+// Оновлення відображення налаштувань в footer
+function updateFooterSettings() {
+  const footer = document.querySelector('footer p');
+  if (footer) {
+    footer.textContent = `Цільовий цукор: ${currentSettings.targetGlucose} ммоль/л • Коеф. вуглеводів: 1 од/ХО • ISF: ${currentSettings.isf} ммоль/л`;
+  }
+}
+
+// Заповнення форми налаштувань
+function populateSettingsForm() {
+  const targetGlucoseInput = document.getElementById('target-glucose');
+  const isfInput = document.getElementById('isf');
+  const breakfastMultiplierInput = document.getElementById('breakfast-multiplier');
+  const lunchMultiplierInput = document.getElementById('lunch-multiplier');
+  const dinnerMultiplierInput = document.getElementById('dinner-multiplier');
+  const snackMultiplierInput = document.getElementById('snack-multiplier');
+
+  if (targetGlucoseInput) targetGlucoseInput.value = currentSettings.targetGlucose;
+  if (isfInput) isfInput.value = currentSettings.isf;
+  if (breakfastMultiplierInput) breakfastMultiplierInput.value = currentSettings.multipliers.breakfast;
+  if (lunchMultiplierInput) lunchMultiplierInput.value = currentSettings.multipliers.lunch;
+  if (dinnerMultiplierInput) dinnerMultiplierInput.value = currentSettings.multipliers.dinner;
+  if (snackMultiplierInput) snackMultiplierInput.value = currentSettings.multipliers.snack;
+}
+
+// Обробка збереження налаштувань
+async function handleSettingsSave(event) {
+  event.preventDefault();
+  
+  const targetGlucose = parseFloat(document.getElementById('target-glucose').value);
+  const isf = parseFloat(document.getElementById('isf').value);
+  const breakfastMultiplier = parseFloat(document.getElementById('breakfast-multiplier').value);
+  const lunchMultiplier = parseFloat(document.getElementById('lunch-multiplier').value);
+  const dinnerMultiplier = parseFloat(document.getElementById('dinner-multiplier').value);
+  const snackMultiplier = parseFloat(document.getElementById('snack-multiplier').value);
+
+  const newSettings = {
+    targetGlucose,
+    isf,
+    multipliers: {
+      breakfast: breakfastMultiplier,
+      lunch: lunchMultiplier,
+      dinner: dinnerMultiplier,
+      snack: snackMultiplier
+    }
+  };
+
+  await saveSettings(newSettings);
+  
+  // Закрити модальне вікно
+  const settingsModal = document.getElementById('settings-modal');
+  settingsModal.classList.add('hidden');
+  
+  alert('Налаштування збережено!');
+}
+
+// Скидання налаштувань до стандартних
+async function resetSettings() {
+  if (confirm('Скинути налаштування до стандартних?')) {
+    await saveSettings(DEFAULT_SETTINGS);
+    populateSettingsForm();
+    alert('Налаштування скинуто до стандартних!');
+  }
+}
+
+// ---------------------- Event Listeners for Settings ----------------------
+
+// Ініціалізація налаштувань після завантаження DOM
+document.addEventListener('DOMContentLoaded', () => {
+  // Кнопка налаштувань
+  const settingsBtn = document.getElementById('settings-btn');
+  const settingsModal = document.getElementById('settings-modal');
+  const settingsForm = document.getElementById('settings-form');
+  const resetSettingsBtn = document.getElementById('reset-settings');
+
+  // Діагностика
+  console.log('Settings elements found:', {
+    settingsBtn: !!settingsBtn,
+    settingsModal: !!settingsModal,
+    settingsForm: !!settingsForm,
+    resetSettingsBtn: !!resetSettingsBtn
+  });
+
+  // Відкриття модального вікна налаштувань
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+      console.log('Settings button clicked');
+      populateSettingsForm();
+      settingsModal.classList.remove('hidden');
+    });
+  } else {
+    console.error('Settings button not found!');
+  }
+
+  // Закриття модального вікна
+  if (settingsModal) {
+    const closeBtn = settingsModal.querySelector('.close-btn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        settingsModal.classList.add('hidden');
+      });
+    }
+    
+    // Закриття при кліку поза модальним вікном
+    settingsModal.addEventListener('click', (e) => {
+      if (e.target === settingsModal) {
+        settingsModal.classList.add('hidden');
+      }
+    });
+  }
+
+  // Обробка форми налаштувань
+  if (settingsForm) {
+    settingsForm.addEventListener('submit', handleSettingsSave);
+  }
+
+  // Кнопка скидання налаштувань
+  if (resetSettingsBtn) {
+    resetSettingsBtn.addEventListener('click', resetSettings);
+  }
+});
+
+// ---------------------- Initialization ----------------------
+
+// Глобальна функція для відкриття налаштувань (для onclick)
+window.openSettings = function() {
+  console.log('openSettings called');
+  const settingsModal = document.getElementById('settings-modal');
+  if (settingsModal) {
+    populateSettingsForm();
+    settingsModal.classList.remove('hidden');
+  } else {
+    console.error('Settings modal not found!');
+  }
+};
+
+// Завантаження налаштувань при старті додатку
+loadSettings();

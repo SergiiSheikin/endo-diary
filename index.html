@@ -18,6 +18,7 @@
     <header>
         <h1>Щоденник діабету</h1>
         <div class="header-tools">
+            <button type="button" id="settings-btn" class="label-btn" title="Налаштування" onclick="openSettings()">⚙️</button>
             <button type="button" id="theme-toggle" class="label-btn" title="Змінити тему">🌙</button>
             <button type="button" id="export-data" class="label-btn" title="Експорт JSON">Експорт JSON</button>
             <button type="button" id="import-data" class="label-btn" title="Імпорт JSON">Імпорт JSON</button>
@@ -102,6 +103,38 @@
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <div id="modal-history-container"></div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Налаштування інсуліну</h2>
+            <form id="settings-form" class="form-column">
+                <label title="Цільовий рівень глюкози в крові">Цільова глюкоза (ммоль/л):
+                    <input type="number" id="target-glucose" step="0.1" min="3" max="15" required />
+                </label>
+                <label title="На скільки ммоль/л знижується глюкоза від 1 одиниці інсуліну">Інсулін-чутливість (ІСФ, ммоль/л):
+                    <input type="number" id="isf" step="0.1" min="0.5" max="10" required />
+                </label>
+                <h3>Множники інсуліну за прийомами їжі:</h3>
+                <label title="Множник для сніданку">Сніданок:
+                    <input type="number" id="breakfast-multiplier" step="0.1" min="0.5" max="5" required />
+                </label>
+                <label title="Множник для обіду">Обід:
+                    <input type="number" id="lunch-multiplier" step="0.1" min="0.5" max="5" required />
+                </label>
+                <label title="Множник для вечері">Вечеря:
+                    <input type="number" id="dinner-multiplier" step="0.1" min="0.5" max="5" required />
+                </label>
+                <label title="Множник для перекусів">Перекуси:
+                    <input type="number" id="snack-multiplier" step="0.1" min="0.5" max="5" required />
+                </label>
+                <div class="button-row">
+                    <button type="submit" class="primary-btn">Зберегти налаштування</button>
+                    <button type="button" id="reset-settings" class="secondary-btn">Скинути до стандартних</button>
+                </div>
+            </form>
         </div>
     </div>
 
