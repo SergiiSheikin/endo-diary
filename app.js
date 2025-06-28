@@ -138,6 +138,8 @@ const PRODUCT_GROUPS = [
       { name: 'Компот', gramsPerHO: 250 },
       { name: 'Пиво світле', gramsPerHO: 300 },
       { name: 'Горілка', gramsPerHO: 0 },
+      { name: 'Кава', gramsPerHO: 0 },
+      { name: 'Чай', gramsPerHO: 0 }, // 1 ч.л. = 0.02 ХО
     ]
   },
   {
