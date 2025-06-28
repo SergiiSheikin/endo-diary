@@ -7,13 +7,6 @@ const ASSETS = [
   './manifest.json',
   './service-worker.js',
   // иконки можно добавить позже
-  // Додайте абсолютні шляхи для піддиректорії:
-  '/endo/',
-  '/endo/index.html',
-  '/endo/styles.css',
-  '/endo/app.js',
-  '/endo/manifest.json',
-  '/endo/service-worker.js'
 ];
 
 self.addEventListener('install', (event) => {
