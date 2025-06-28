@@ -53,6 +53,14 @@ if (mealSelect) {
 // ---------------------- Products ----------------------
 const PRODUCT_GROUPS = [
   {
+    group: 'Каши, макарони',
+    products: [
+      { name: 'Рис відварний', gramsPerHO: 35 },
+      { name: 'Гречка варена', gramsPerHO: 50 },
+      { name: 'Макарони варені', gramsPerHO: 50 },
+    ]
+  },
+  {
     group: 'Зернові, злакові, вироби з борошна',
     products: [
       { name: 'Хліб чорний', gramsPerHO: 25 },
@@ -129,12 +137,14 @@ const PRODUCT_GROUPS = [
       { name: 'Квас', gramsPerHO: 250 },
       { name: 'Компот', gramsPerHO: 250 },
       { name: 'Пиво світле', gramsPerHO: 300 },
+      { name: 'Горілка', gramsPerHO: 0 },
     ]
   },
   {
     group: 'Готові продукти',
     products: [
       { name: 'Ковбаса варена, сосиски', gramsPerHO: 100 },
+      { name: "М'ясо", gramsPerHO: 0 },
       { name: 'Суп домашній', gramsPerHO: 62.5 },
       { name: 'Борщ домашній', gramsPerHO: 62.5 },
       { name: 'Торт кусок', gramsPerHO: 25 },
