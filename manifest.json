@@ -1,8 +1,24 @@
 {
-  "name": "Дневник диабета",
-  "short_name": "Diabetes",
-  "start_url": "./index.html",
+  "name": "Щоденник діабету",
+  "short_name": "Діабет",
+  "id": "/index.html",
+  "description": "Застосунок для ведення щоденника діабету, розрахунку інсуліну та підрахунку хлібних одиниць.",
+  "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#1976d2",
-  "theme_color": "#1976d2"
-} 
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
