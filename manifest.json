@@ -3,7 +3,7 @@
   "short_name": "Діабет",
   "id": "/index.html",
   "description": "Застосунок для ведення щоденника діабету, розрахунку інсуліну та підрахунку хлібних одиниць.",
-  "start_url": "/index.html",
+  "start_url": "/endo-diary/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1976d2",
