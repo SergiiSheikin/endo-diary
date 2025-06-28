@@ -1264,17 +1264,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const resetSettingsBtn = document.getElementById('reset-settings');
 
   // Діагностика
-  console.log('Settings elements found:', {
-    settingsBtn: !!settingsBtn,
-    settingsModal: !!settingsModal,
-    settingsForm: !!settingsForm,
-    resetSettingsBtn: !!resetSettingsBtn
-  });
+  // console.log('Settings elements found:', {
+  //   settingsBtn: !!settingsBtn,
+  //   settingsModal: !!settingsModal,
+  //   settingsForm: !!settingsForm,
+  //   resetSettingsBtn: !!resetSettingsBtn
+  // });
 
   // Відкриття модального вікна налаштувань
   if (settingsBtn) {
     settingsBtn.addEventListener('click', () => {
-      console.log('Settings button clicked');
+      // console.log('Settings button clicked');
       populateSettingsForm();
       settingsModal.classList.remove('hidden');
     });
@@ -1314,7 +1314,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Глобальна функція для відкриття налаштувань (для onclick)
 window.openSettings = function() {
-  console.log('openSettings called');
+  // console.log('openSettings called');
   const settingsModal = document.getElementById('settings-modal');
   if (settingsModal) {
     populateSettingsForm();

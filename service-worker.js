@@ -7,6 +7,13 @@ const ASSETS = [
   './manifest.json',
   './service-worker.js',
   // иконки можно добавить позже
+  // Додайте абсолютні шляхи для піддиректорії:
+  '/endo/',
+  '/endo/index.html',
+  '/endo/styles.css',
+  '/endo/app.js',
+  '/endo/manifest.json',
+  '/endo/service-worker.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -30,7 +37,12 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+  if (
+    event.request.method !== 'GET' ||
+    !(event.request.url.startsWith('http://') || event.request.url.startsWith('https://'))
+  ) {
+    return;
+  }
   event.respondWith(
     caches.match(event.request).then((resp) => {
       return (
@@ -43,4 +55,4 @@ self.addEventListener('fetch', (event) => {
       );
     })
   );
-}); 
+});
